@@ -40,9 +40,12 @@ export default function Home({posts}) {
         <div className={styles.posts}>
           <Link href={`/posts/como-utilizar-hooks-teste`}>
             <a key="como-utilizar-hooks">
-              <time>15 Mar 2021</time>
               <strong>Como utilizar Hooks</strong>
               <p>Pensando em sincronização em vez de ciclos de vida.</p>
+              <div className={styles.info}>
+                <time>15 Mar 2021</time>
+                <p>Iana Sousa</p>
+              </div>
             </a>
           </Link>
         </div>
