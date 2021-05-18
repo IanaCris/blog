@@ -38,7 +38,7 @@ export default function Home({posts}) {
 
       <main className={styles.container}>
         <div className={styles.posts}>
-          <Link href={`/posts/como-utilizar-hooks`}>
+          <Link href={`/posts/como-utilizar-hooks-teste`}>
             <a key="como-utilizar-hooks">
               <time>15 Mar 2021</time>
               <strong>Como utilizar Hooks</strong>
