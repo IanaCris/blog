@@ -5,6 +5,7 @@
 }
 
 :root {
+  --backgroud: #1A1D23;
   --white: #ffffff;
 
   --title: #F8F8F8;
@@ -26,7 +27,7 @@
 }
 
 body {
-  background: #1A1D23;
+  background: var(--backgroud);
   color: var(--white);
 }
 
