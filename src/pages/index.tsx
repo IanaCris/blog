@@ -28,8 +28,8 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-export default function Home({posts}) {
-  console.log(posts);
+export default function Home({ postsPagination }) {
+  console.log(postsPagination);
   return (
     <>
       <Head>
@@ -38,7 +38,37 @@ export default function Home({posts}) {
 
       <main className={styles.container}>
         <div className={styles.posts}>
-          <Link href={`/posts/como-utilizar-hooks-teste`}>
+          <Link href={`/post/como-utilizar-hooks-teste`}>
+            <a key="como-utilizar-hooks">
+              <strong>Como utilizar Hooks</strong>
+              <p>Pensando em sincronização em vez de ciclos de vida.</p>
+              <div className={styles.info}>
+                <time>15 Mar 2021</time>
+                <p>Iana Sousa</p>
+              </div>
+            </a>
+          </Link>
+          <Link href={`/post/como-utilizar-hooks-teste`}>
+            <a key="como-utilizar-hooks">
+              <strong>Como utilizar Hooks</strong>
+              <p>Pensando em sincronização em vez de ciclos de vida.</p>
+              <div className={styles.info}>
+                <time>15 Mar 2021</time>
+                <p>Iana Sousa</p>
+              </div>
+            </a>
+          </Link>
+          <Link href={`/post/como-utilizar-hooks-teste`}>
+            <a key="como-utilizar-hooks">
+              <strong>Como utilizar Hooks</strong>
+              <p>Pensando em sincronização em vez de ciclos de vida.</p>
+              <div className={styles.info}>
+                <time>15 Mar 2021</time>
+                <p>Iana Sousa</p>
+              </div>
+            </a>
+          </Link>
+          <Link href={`/post/como-utilizar-hooks-teste`}>
             <a key="como-utilizar-hooks">
               <strong>Como utilizar Hooks</strong>
               <p>Pensando em sincronização em vez de ciclos de vida.</p>
@@ -53,29 +83,35 @@ export default function Home({posts}) {
     </>
   )
 }
-/*
+
 export const getStaticProps: GetStaticProps = async () => {
+
   const prismic = getPrismicClient();
-  const postsResponse = await prismic.query([
-      Prismic.predicates.at('document.type', 'posts')
-    ], {
-      fetch: ['posts.title', 'posts.content'],
-      pageSize: 20,
-    }
-  );
 
-  console.log(postsResponse);
+  const response = await prismic.query([
+    Prismic.predicates.at('document.type', 'posts')
+  ], {
+    fetch: ['posts.title', 'posts.content'],
+    pageSize: 20,
+  })
 
-  const posts = postsResponse.results.map(post => {
+  const postsPagination = response.results.map(post => {
     return {
       slug: post.uid,
-      title: RichText.asText(post.data.title),
+      excerpt: post.data.content.find(content => content.type === 'paragraph')?.text ?? '',
+      updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })
     };
   });
 
+  //console.log(JSON.stringify(response, null, 2));
+
   return {
     props: {
-      posts
+      postsPagination
     }
   }
-}; */
+};
