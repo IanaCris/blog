@@ -29,7 +29,7 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }) {
-  //console.log(postsPagination);
+  console.log(postsPagination);
   return (
     <>
       <Head>
@@ -41,8 +41,8 @@ export default function Home({ postsPagination }) {
           { postsPagination.map(post => (
             <Link href={`/post/${post.slug}`}>
               <a key={post.slug}>
-                <strong>{post.title}</strong>
-                <p>Pensando em sincronização em vez de ciclos de vida.</p>
+                <strong>Como navegar na internet usando o firefox?</strong>
+                <p>{post.excerpt}</p>
                 <div className={styles.info}>
                   <time>{post.updatedAt}</time>
                   <p>Iana Sousa</p>
@@ -67,11 +67,13 @@ export const getStaticProps: GetStaticProps = async () => {
     pageSize: 20,
   })
 
+  console.log(JSON.stringify(response, null, 2));
+
   const postsPagination = response.results.map(post => {
     return {
       slug: post.uid,
       //title: RichText.asText(post.data.title),
-      excerpt: post.data.content.find(content => content.type === 'paragraph')?.text ?? '',
+      excerpt: post.data.content[0].body.find(content => content.type === 'paragraph')?.text ?? '',
       updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: 'long',
