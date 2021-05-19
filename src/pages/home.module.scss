@@ -12,23 +12,26 @@
     display: block;
 
     & + a {
-      margin-top: 2rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--gray-700);
+      margin-top: 3rem;
     }
 
     .info {
       display: flex;
+      align-items: center;
 
       time {
         font-size: 1rem;
-        display: flex;
         align-items: center;
-        color: var(--gray-300);
+        color: var(--info);
+        font-family: Inter, sans-serif;
+        font-weight: 400;
       }
 
       p {
         margin-left: 1rem;
+        color: var(--info);
+        font-family: Inter, sans-serif;
+        font-weight: 400;
       }
     }
 
@@ -38,16 +41,19 @@
       margin-top: 1rem;
       line-height: 2rem;
       transition: color 0.2s;
+      font-family: Inter, sans-serif;
+      font-weight: 700;
+      color: var(--heading);
     }
 
     p {
-      color: var(--gray-300);
+      color: var(--body);
       margin-top: 0.5rem;
       line-height: 1.625rem;
     }
 
     &:hover strong {
-      color: var(--yellow-500);
+      color: #f12345;
     }
   }
 }
