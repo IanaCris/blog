@@ -29,7 +29,7 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }) {
-  console.log(postsPagination);
+  //console.log(postsPagination);
   return (
     <>
       <Head>
@@ -38,46 +38,18 @@ export default function Home({ postsPagination }) {
 
       <main className={styles.container}>
         <div className={styles.posts}>
-          <Link href={`/post/como-utilizar-hooks-teste`}>
-            <a key="como-utilizar-hooks">
-              <strong>Como utilizar Hooks</strong>
-              <p>Pensando em sincronização em vez de ciclos de vida.</p>
-              <div className={styles.info}>
-                <time>15 Mar 2021</time>
-                <p>Iana Sousa</p>
-              </div>
-            </a>
-          </Link>
-          <Link href={`/post/como-utilizar-hooks-teste`}>
-            <a key="como-utilizar-hooks">
-              <strong>Como utilizar Hooks</strong>
-              <p>Pensando em sincronização em vez de ciclos de vida.</p>
-              <div className={styles.info}>
-                <time>15 Mar 2021</time>
-                <p>Iana Sousa</p>
-              </div>
-            </a>
-          </Link>
-          <Link href={`/post/como-utilizar-hooks-teste`}>
-            <a key="como-utilizar-hooks">
-              <strong>Como utilizar Hooks</strong>
-              <p>Pensando em sincronização em vez de ciclos de vida.</p>
-              <div className={styles.info}>
-                <time>15 Mar 2021</time>
-                <p>Iana Sousa</p>
-              </div>
-            </a>
-          </Link>
-          <Link href={`/post/como-utilizar-hooks-teste`}>
-            <a key="como-utilizar-hooks">
-              <strong>Como utilizar Hooks</strong>
-              <p>Pensando em sincronização em vez de ciclos de vida.</p>
-              <div className={styles.info}>
-                <time>15 Mar 2021</time>
-                <p>Iana Sousa</p>
-              </div>
-            </a>
-          </Link>
+          { postsPagination.map(post => (
+            <Link href={`/post/${post.slug}`}>
+              <a key={post.slug}>
+                <strong>{post.title}</strong>
+                <p>Pensando em sincronização em vez de ciclos de vida.</p>
+                <div className={styles.info}>
+                  <time>{post.updatedAt}</time>
+                  <p>Iana Sousa</p>
+                </div>
+              </a>
+            </Link>
+          )) }
         </div>
       </main>
     </>
@@ -98,6 +70,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const postsPagination = response.results.map(post => {
     return {
       slug: post.uid,
+      //title: RichText.asText(post.data.title),
       excerpt: post.data.content.find(content => content.type === 'paragraph')?.text ?? '',
       updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
         day: '2-digit',
@@ -107,7 +80,7 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   });
 
-  //console.log(JSON.stringify(response, null, 2));
+  console.log(JSON.stringify(response.results, null, 2));
 
   return {
     props: {
