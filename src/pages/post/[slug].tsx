@@ -41,7 +41,8 @@ export const getStaticPaths = async () => {
     fetch: ['posts.title', 'posts.content'],
     pageSize: 20,
   });
-  
+
+  console.log(posts);
 
 };
 
