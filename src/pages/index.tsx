@@ -1,6 +1,7 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
+import { FaCalendar, FaUser } from 'react-icons/fa';
 
 import { getPrismicClient } from '../services/prismic';
 import Prismic from '@prismicio/client';
@@ -44,8 +45,15 @@ export default function Home({ postsPagination }) {
                 <strong>Como navegar na internet usando o firefox?</strong>
                 <p>{post.excerpt}</p>
                 <div className={styles.info}>
-                  <time>{post.updatedAt}</time>
-                  <p>Iana Sousa</p>
+                  <div className={styles.createdAt}>
+                    <FaCalendar />
+                    <time>{post.updatedAt}</time>
+                  </div>
+
+                  <div className={styles.author}>
+                    <FaUser />
+                    <p>Iana Sousa</p>
+                  </div>
                 </div>
               </a>
             </Link>
@@ -67,7 +75,7 @@ export const getStaticProps: GetStaticProps = async () => {
     pageSize: 20,
   })
 
-  console.log(JSON.stringify(response, null, 2));
+  //console.log(JSON.stringify(response, null, 2));
 
   const postsPagination = response.results.map(post => {
     return {
