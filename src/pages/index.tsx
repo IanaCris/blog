@@ -30,7 +30,7 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }) {
-  console.log(postsPagination);
+  //console.log(postsPagination);
   return (
     <>
       <Head>
@@ -40,9 +40,9 @@ export default function Home({ postsPagination }) {
       <main className={styles.container}>
         <div className={styles.posts}>
           { postsPagination.map(post => (
-            <Link href={`/post/${post.slug}`}>
-              <a key={post.slug}>
-                <strong>Como navegar na internet usando o firefox?</strong>
+            <Link href={`/post/${post.slug}`} key={post.slug}>
+              <a>
+                <strong>{post.title}</strong>
                 <p>{post.excerpt}</p>
                 <div className={styles.info}>
                   <div className={styles.createdAt}>
@@ -72,15 +72,24 @@ export const getStaticProps: GetStaticProps = async () => {
     Prismic.predicates.at('document.type', 'posts')
   ], {
     fetch: ['posts.title', 'posts.content'],
-    pageSize: 20,
+    pageSize: 2,
   })
 
-  //console.log(JSON.stringify(response, null, 2));
+  const nextPost = await prismic.query(
+    [Prismic.predicates.at('document.type', 'posts')],
+    {
+      pageSize: 1,
+      after: `${response.next_page}`,
+      orderings: '[document.first_publication_date]',
+    }
+  );
+
+  //console.log(JSON.stringify(nextPost, null, 2));
 
   const postsPagination = response.results.map(post => {
     return {
       slug: post.uid,
-      //title: RichText.asText(post.data.title),
+      title: post.data.title,
       excerpt: post.data.content[0].body.find(content => content.type === 'paragraph')?.text ?? '',
       updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
         day: '2-digit',
@@ -90,7 +99,7 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   });
 
-  console.log(JSON.stringify(response.results, null, 2));
+  //console.log(JSON.stringify(postsPagination, null, 2));
 
   return {
     props: {

@@ -33,27 +33,35 @@ export default function Post() {
   )
 }
 
-export const getStaticPaths = async () => {
-  const prismic = getPrismicClient();
+export const getStaticPaths: GetStaticPaths = async () => {
+  /* const prismic = getPrismicClient();
   const posts = await prismic.query([
     Prismic.predicates.at('document.type', 'posts')
   ], {
-    fetch: ['posts.title', 'posts.content'],
-    pageSize: 20,
+    fetch: [], //'posts.title', 'posts.content'
+    pageSize: 1,
   });
 
-  console.log(posts);
+  //console.log(posts);
+  console.log(JSON.stringify(posts, null, 2)); */
 
-};
+  return {
+    paths: [],
+    fallback: 'blocking'
+  }
+}
 
-export const getStaticProps = async ({ req, params }) => {
+export const getStaticProps = async ({ params }) => {
   const { slug } = params;
 
   const prismic = getPrismicClient();
   const response = await prismic.getByUID('posts', String(slug), {});
 
+  console.log(JSON.stringify(response, null, 2));
+
   const post = {
     slug,
+    title: response.data.title,
     updatedAt: new Date(response.last_publication_date).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: 'long',
@@ -61,7 +69,7 @@ export const getStaticProps = async ({ req, params }) => {
     })
   };
 
-  console.log(JSON.stringify(response, null, 2));
+  //console.log(JSON.stringify(response, null, 2));
 
   return {
     props: {
