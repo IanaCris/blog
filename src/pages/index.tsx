@@ -1,7 +1,10 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
+import { format } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
+
 import Link from 'next/link';
-import { FaCalendar, FaUser } from 'react-icons/fa';
+import { FiCalendar, FiUser } from 'react-icons/fi';
 
 import { getPrismicClient } from '../services/prismic';
 import Prismic from '@prismicio/client';
@@ -46,12 +49,12 @@ export default function Home({ postsPagination }) {
                 <p>{post.excerpt}</p>
                 <div className={styles.info}>
                   <div className={styles.createdAt}>
-                    <FaCalendar />
+                    <FiCalendar />
                     <time>{post.updatedAt}</time>
                   </div>
 
                   <div className={styles.author}>
-                    <FaUser />
+                    <FiUser />
                     <p>Iana Sousa</p>
                   </div>
                 </div>
@@ -91,11 +94,13 @@ export const getStaticProps: GetStaticProps = async () => {
       slug: post.uid,
       title: post.data.title,
       excerpt: post.data.content[0].body.find(content => content.type === 'paragraph')?.text ?? '',
-      updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-      })
+      updatedAt: format(
+        new Date(post.last_publication_date),
+        "PP",
+        {
+          locale: ptBR,
+        }
+      )
     };
   });
 

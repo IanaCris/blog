@@ -1,7 +1,12 @@
+import { format } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
+import Head from 'next/head';
+
 import { GetStaticPaths, GetStaticProps } from 'next';
 
 import { getPrismicClient } from '../../services/prismic';
 import Prismic from '@prismicio/client';
+import { RichText } from 'prismic-dom';
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
@@ -27,9 +32,19 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post() {
+export default function Post({ post }) {
+  console.log(post);
   return (
-    <div>poi</div>
+    <div className={commonStyles.wrapper}>
+      <Head>
+        <title>Teste</title>
+      </Head>
+
+      <main>
+        <div>Banner</div>
+        <div>noticia</div>
+      </main>
+    </div>
   )
 }
 
@@ -57,18 +72,21 @@ export const getStaticProps = async ({ params }) => {
   const prismic = getPrismicClient();
   const response = await prismic.getByUID('posts', String(slug), {});
 
-  console.log(JSON.stringify(response, null, 2));
-
   const post = {
     slug,
     title: response.data.title,
-    updatedAt: new Date(response.last_publication_date).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    })
+    author: response.data.author,
+    //content: RichText.asHtml(response.data.content),
+    updatedAt: format(
+      new Date(response.last_publication_date),
+      "PP",
+      {
+        locale: ptBR,
+      }
+    )
   };
 
+  console.log(JSON.stringify(post, null, 2));
   //console.log(JSON.stringify(response, null, 2));
 
   return {
