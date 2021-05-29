@@ -35,7 +35,7 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post({ post }) {
+export default function Post({ post }: PostProps) {
   //console.log(post);
   const router = useRouter();
   if (router.isFallback) {
@@ -45,19 +45,25 @@ export default function Post({ post }) {
   return (
     <>
       <Head>
-        <title>{post.title} | Blog</title>
+        <title>{post.data.title} | Blog</title>
       </Head>
 
       <Header />
 
+      <div className={styles.banner} />
+
       <main className={styles.container}>
         <div className={styles.content}>
-          <p>Titulo da noticia</p>
+          <p>{post.data.title}</p>
           <div className={styles.info}>
             <FiCalendar />
-            <p>15 mar 2021</p>
+            <time>
+              {format(new Date(post.first_publication_date), 'PP', {
+                locale: ptBR,
+              })}
+            </time>
             <FiUser />
-            <p>Iana Sousa</p>
+            <p>{post.data.author}</p>
             <FiClock />
             <p>4 min</p>
           </div>
@@ -97,17 +103,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const response = await prismic.getByUID('posts', String(slug), {});
 
   const post = {
-    slug,
-    title: response.data.title,
-    author: response.data.author,
-    //content: RichText.asHtml(response.data.content),
-    updatedAt: format(
-      new Date(response.last_publication_date),
-      "PP",
-      {
-        locale: ptBR,
-      }
-    )
+    first_publication_date: response.first_publication_date,
+    data: {
+      title: response.data.title,
+      banner: {
+        url: response.data.banner.url ?? null,
+      },
+      author: response.data.author,
+      content: response.data.content.map(item => ({
+        heading: item.heading,
+        body: [...item.body],
+      })),
+    },
+    uid: response.uid,
   };
 
   console.log(JSON.stringify(post, null, 2));
