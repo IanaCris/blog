@@ -121,8 +121,6 @@ export const getStaticProps: GetStaticProps = async () => {
     pageSize: 2,
   })
 
-  //console.log(JSON.stringify(nextPost, null, 2));
-
   const results = response.results.map(post => {
     return {
       uid: post.uid,
@@ -135,7 +133,7 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   });
 
-  //console.log(JSON.stringify(postsPagination, null, 2));
+  //console.log(JSON.stringify(results, null, 2));
 
   return {
     props: {

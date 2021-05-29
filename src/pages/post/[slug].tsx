@@ -3,7 +3,7 @@ import ptBR from 'date-fns/locale/pt-BR';
 import Head from 'next/head';
 
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { FiCalendar, FiUser } from 'react-icons/fi';
+import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 
 import { getPrismicClient } from '../../services/prismic';
 import Prismic from '@prismicio/client';
@@ -12,6 +12,7 @@ import { RichText } from 'prismic-dom';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 import Header from '../../components/Header';
+import { useRouter } from 'next/router';
 
 interface Post {
   first_publication_date: string | null;
@@ -36,46 +37,57 @@ interface PostProps {
 
 export default function Post({ post }) {
   //console.log(post);
+  const router = useRouter();
+  if (router.isFallback) {
+    return <div>Carregando...</div>;
+  }
+
   return (
-    <div className={commonStyles.wrapper}>
+    <>
       <Head>
         <title>{post.title} | Blog</title>
       </Head>
 
       <Header />
 
-      <div className={styles.content}>
-        <p>Titulo da noticia</p>
-        <div className={styles.info}>
-          <FiCalendar />
-          <p>15 mar 2021</p>
-          <FiUser />
-          <p>Iana Sousa</p>
-          <FiUser />
-          <p>Iana Sousa</p>
+      <main className={styles.container}>
+        <div className={styles.content}>
+          <p>Titulo da noticia</p>
+          <div className={styles.info}>
+            <FiCalendar />
+            <p>15 mar 2021</p>
+            <FiUser />
+            <p>Iana Sousa</p>
+            <FiClock />
+            <p>4 min</p>
+          </div>
         </div>
-      </div>
+      </main>
 
-    </div>
+    </>
   )
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  /* const prismic = getPrismicClient();
-  const posts = await prismic.query([
-    Prismic.predicates.at('document.type', 'posts')
-  ], {
-    fetch: [], //'posts.title', 'posts.content'
-    pageSize: 1,
+  const prismic = getPrismicClient();
+
+  const posts = await prismic.query(
+    [Prismic.predicates.at('document.type', 'post')],
+    { pageSize: 3 }
+  );
+
+  const paths = posts.results.map(result => {
+    return {
+      params: {
+        slug: result.uid,
+      },
+    };
   });
 
-  //console.log(posts);
-  console.log(JSON.stringify(posts, null, 2)); */
-
   return {
-    paths: [],
-    fallback: 'blocking'
-  }
+    paths,
+    fallback: true,
+  };
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {

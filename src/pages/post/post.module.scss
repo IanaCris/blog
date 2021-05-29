@@ -1,16 +1,14 @@
-.banner {
-  //position: absolute;
-  display: block;
-  width: 100%;
-  height: 200px;
-  left: 0px;
-  top: 80px;
-
-  border: solid 1px red;
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
 .content {
   max-width: 720px;
   margin: 5rem auto 0;
-  border: solid 1px blue;
+
+  .info {
+    display: flex;
+  }
 }
