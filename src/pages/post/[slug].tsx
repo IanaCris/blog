@@ -18,6 +18,7 @@ interface Post {
   first_publication_date: string | null;
   data: {
     title: string;
+    subtitle: string;
     banner: {
       url: string;
     };
@@ -29,6 +30,7 @@ interface Post {
       }[];
     }[];
   };
+  uid: string;
 }
 
 interface PostProps {
@@ -36,7 +38,19 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps) {
-  //console.log(post);
+  // console.log(post);
+
+  const totalWords = post.data.content.reduce((total, contentItem) => {
+    total += contentItem.heading.split(' ').length;
+
+    const words = contentItem.body.map(item => item.text.split(' ').length);
+    words.map(word => (total += word));
+
+    return total;
+  }, 0);
+
+  const readingTime = Math.ceil(totalWords / 200);
+
   const router = useRouter();
   if (router.isFallback) {
     return <div>Carregando...</div>;
@@ -50,22 +64,44 @@ export default function Post({ post }: PostProps) {
 
       <Header />
 
-      <div className={styles.banner} />
+      <div className={styles.bannerImage} />
 
       <main className={styles.container}>
         <div className={styles.content}>
-          <p>{post.data.title}</p>
+          <h1>{post.data.title}</h1>
+          <p>{post.data.subtitle}</p>
+
           <div className={styles.info}>
-            <FiCalendar />
-            <time>
-              {format(new Date(post.first_publication_date), 'PP', {
-                locale: ptBR,
-              })}
-            </time>
-            <FiUser />
-            <p>{post.data.author}</p>
-            <FiClock />
-            <p>4 min</p>
+            <span>
+              <FiCalendar />
+              <time>
+                {format(new Date(post.first_publication_date), 'PP', {
+                  locale: ptBR,
+                })}
+              </time>
+            </span>
+
+            <span>
+              <FiUser />
+              <p>{post.data.author}</p>
+            </span>
+
+            <span>
+              <FiClock />
+              <p>{`${readingTime} min`}</p>
+            </span>
+          </div>
+
+          <div className={styles.postContent}>
+            {post.data.content.map(({ heading, body }) => (
+              <div key={heading}>
+                {heading && <h2>{heading}</h2>}
+
+                <div className={styles.postSection}
+                  dangerouslySetInnerHTML={{ __html: RichText.asHtml(body) }}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </main>
@@ -106,6 +142,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     first_publication_date: response.first_publication_date,
     data: {
       title: response.data.title,
+      subtitle: response.data.subtitle,
       banner: {
         url: response.data.banner.url ?? null,
       },
@@ -118,12 +155,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     uid: response.uid,
   };
 
-  console.log(JSON.stringify(post, null, 2));
+  //console.log(JSON.stringify(post, null, 2));
   //console.log(JSON.stringify(response, null, 2));
 
   return {
     props: {
       post,
-    }
+    },
+    revalidate: 60 * 30,
   }
 };

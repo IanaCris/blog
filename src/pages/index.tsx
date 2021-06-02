@@ -35,7 +35,7 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps) {
-  console.log(postsPagination);
+  //console.log(postsPagination);
   const [posts, setPosts] = useState(postsPagination.results);
   const [nextPost, setNextPost] = useState('');
 
